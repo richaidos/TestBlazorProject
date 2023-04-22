@@ -1,0 +1,94 @@
+﻿@page "/"
+@page "/budget"
+@using BudgetBook.Data
+@inject BudgetBookService budgetBookService
+
+<h3>Budget</h3>
+
+
+<form>
+    <div class="row">
+        <div class="col">
+            <label class="control-label">Description</label>
+            <input class="form-control" @bind="@newEntry.Description"/>
+        </div>
+        <div class="col">
+            <label class="control-label">Amount</label>
+            <input class="form-control" @bind="@newEntry.Amount"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-primary" @onclick="@CreateEntry">Add</button>
+        </div>
+    </div>
+</form>
+<hr />
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Description</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Entry entry in allEntries)
+        {
+            <tr>
+                    <td>@entry.Id</td>
+                    <td>@entry.Description</td>
+                    <td>@entry.Amount</td>
+                                <td><button class="btn btn-danger" @onclick="(() => DeleteEntry(entry.Id))">DELETE</button></td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+
+
+@code {
+
+    List<Entry> allEntries = new List<Entry>();
+
+    Entry newEntry = new Entry();
+    int id;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        allEntries = await budgetBookService.GetAllEntries();
+
+    }
+
+    protected async void CreateEntry()
+    {
+        await budgetBookService.AddEntry(newEntry);
+    }
+
+    protected async void DeleteEntry(int id)
+    {
+        await budgetBookService.DeleteEntry(id);
+    }
+
+
+    public class Games
+    {
+        public string ID { get; set; }
+        public string Text { get; set; }
+    }
+    List<Games> LocalData = new List<Games> {
+    new Games() { ID= "Game1", Text= "American Football" },
+    new Games() { ID= "Game2", Text= "Badminton" },
+    new Games() { ID= "Game3", Text= "Basketball" },
+    new Games() { ID= "Game4", Text= "Cricket" },
+    new Games() { ID= "Game5", Text= "Football" },
+    new Games() { ID= "Game6", Text= "Golf" },
+    new Games() { ID= "Game7", Text= "Hockey" },
+    new Games() { ID= "Game8", Text= "Rugby"},
+    new Games() { ID= "Game9", Text= "Snooker" },
+    new Games() { ID= "Game10", Text= "Tennis"},
+  };
+
+
+}
+ 
